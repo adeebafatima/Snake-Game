@@ -24,10 +24,15 @@
 
 }
 
+.snake{
+    background-color: purple;
+}
+
 .head{
     background-color: red;
 }
 
 .food{
-    background-color: purple;
+    background-color: yellow;
+
 }
