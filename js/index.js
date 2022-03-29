@@ -27,7 +27,7 @@ function main(ctime) {
   }
   lastPaintTime = ctime;
   gameEngine();
-  //   console.log(ctime);
+  //console.log(ctime);
 }
 
 function isCollide(snake) {
@@ -41,7 +41,8 @@ function isCollide(snake) {
   //If you bump into the wall
   if (
     snake[0].x >= 18 ||
-    (snake[0].x <= 0 && snake[0].y >= 18) ||
+    snake[0].x <= 0 ||
+    snake[0].y >= 18 ||
     snake[0].y <= 0
   ) {
     return true;
@@ -57,13 +58,20 @@ function gameEngine() {
     inputDir = { x: 0, y: 0 };
     alert("Game Over. Press any key to play again");
     snakeArr = [{ x: 13, y: 15 }];
-    musicSound.play();
+    // musicSound.play();
     score = 0;
   }
 
   //If you have eaten the food, increment score and regenerate the food
   if (snakeArr[0].y == food.y && snakeArr[0].x == food.x) {
     foodSound.play();
+    score += 1;
+    if (score > highScoreVal) {
+      highScoreVal = score;
+      localStorage.setItem("highScore", JSON.stringify(highScoreVal));
+      highScoreBox.innerHTML = "High Score: " + highScoreVal;
+    }
+    scoreBox.innerHTML = "Your Score: " + score;
     snakeArr.unshift({
       x: snakeArr[0].x + inputDir.x,
       y: snakeArr[0].y + inputDir.y,
@@ -107,28 +115,34 @@ function gameEngine() {
 }
 
 //Main Logic
+
+let highScore = localStorage.getItem("highScore");
+if (highScore === null) {
+  highScoreVal = 0;
+  localStorage.setItem("highScore", JSON.stringify(highScoreVal));
+} else {
+  highScoreVal = JSON.parse(highScore);
+  highScoreBox.innerHTML = "High Score: " + highScore;
+}
+
 window.requestAnimationFrame(main);
 window.addEventListener("keydown", (e) => {
   inputDir = { x: 0, y: 1 }; // start the game
   moveSound.play();
   switch (e.key) {
     case "ArrowUp":
-      console.log("Up");
       inputDir.x = 0;
       inputDir.y = -1;
       break;
     case "ArrowDown":
-      console.log("Down");
       inputDir.x = 0;
       inputDir.y = 1;
       break;
     case "ArrowLeft":
-      console.log("L");
       inputDir.x = -1;
       inputDir.y = 0;
       break;
     case "ArrowRight":
-      console.log("R");
       inputDir.x = 1;
       inputDir.y = 0;
       break;
